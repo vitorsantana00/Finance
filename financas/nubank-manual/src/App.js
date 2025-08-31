@@ -8,6 +8,7 @@ import {
   ScrollView,
   Alert,
   TouchableOpacity,
+  Platform,
 } from "react-native";
 import * as SQLite from "expo-sqlite";
 import { StatusBar } from "expo-status-bar";
@@ -281,8 +282,6 @@ function Dashboard() {
 function QuickAdd() {
   const [desc, setDesc] = useState("");
   const [val, setVal] = useState("");
-  theKindCheck();
-  function theKindCheck() {}
   const [kind, setKind] = useState("expense");
   const [cats, setCats] = useState([]);
   const [cat, setCat] = useState("");
@@ -708,7 +707,9 @@ function Historico() {
       ))}
 
       {editing && (
-        <View style={{ marginTop: 16, padding: 12, borderWidth: 1, borderRadius: 6 }}>
+        <View
+          style={{ marginTop: 16, padding: 12, borderWidth: 1, borderRadius: 6 }}
+        >
           <Text style={{ fontSize: 18, fontWeight: "600" }}>
             Editar lançamento
           </Text>
@@ -798,6 +799,32 @@ function Config() {
 
 /* ========= App (tabs) ========= */
 export default function App() {
+  // 🚫 Web: expo-sqlite não funciona — evita tela branca
+  if (Platform.OS === "web") {
+    return (
+      <SafeAreaView style={{ flex: 1, padding: 16 }}>
+        <StatusBar style="auto" />
+        <Text style={{ fontSize: 22, fontWeight: "700" }}>
+          Web não suportado neste projeto
+        </Text>
+        <View style={{ height: 10 }} />
+        <Text>
+          Este app usa armazenamento local via expo-sqlite, que não funciona no navegador.
+        </Text>
+        <View style={{ height: 10 }} />
+        <Text style={{ fontWeight: "600" }}>Como executar:</Text>
+        <View style={{ height: 6 }} />
+        <Text>• Abra no celular com Expo Go (iOS/Android)</Text>
+        <Text>• ou rode no Emulador Android (Windows) pelo Android Studio</Text>
+        <View style={{ height: 16 }} />
+        <Text style={{ fontWeight: "600" }}>Atalhos:</Text>
+        <View style={{ height: 6 }} />
+        <Text>1) npx expo start --host lan   (mesma rede Wi-Fi)</Text>
+        <Text>2) npx expo start --host tunnel (redes diferentes)</Text>
+      </SafeAreaView>
+    );
+  }
+
   const [tab, setTab] = useState("dash");
   useEffect(() => {
     initDb();
